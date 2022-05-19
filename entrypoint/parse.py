@@ -2,11 +2,12 @@
 from dateparser import parse
 from entrypoint.file_cache import clear_cache, get_directive
 
+
 """
 An entrypoint for dateparser that exposes structure in terms of python datetime [Format Code List](https://www.programiz.com/python-programming/datetime/strftime)
 """
 
-def get_structure(string, settings=None):
+def get_structure(string, settings=None, test=False):
     clear_cache()
 
     dt_object = parse(string, settings)
@@ -17,9 +18,13 @@ def get_structure(string, settings=None):
     cache_data = get_directive()
     structure = cache_data["translation"]
 
-    for patters in cache_data["directives"]:
-        string = patters.get("string")
-        directive = patters.get("directive")
-        structure = structure.replace(string, directive, 1)
+    directives =  [dict(s) for s in set(frozenset(d.items()) for d in cache_data["directives"])]
 
-    return {"datetime_object": dt_object, "structure": structure}
+
+    for patters in directives:
+        cons_string = patters.get("string")
+        directive = patters.get("directive")
+        structure = structure.replace(cons_string, directive, 1)
+
+    return_data = {"datetime_object": dt_object, "structure": structure}
+    return return_data
