@@ -12,7 +12,7 @@ from dateparser.utils import set_correct_day_from_settings, \
     _get_missing_parts
 from dateparser.utils.strptime import strptime
 
-from entrypoint.file_cache import add_directive, add_translation
+from dateparser.entrypoint.file_cache import add_directive, add_translation
 
 
 NSP_COMPATIBLE = re.compile(r'\D+')

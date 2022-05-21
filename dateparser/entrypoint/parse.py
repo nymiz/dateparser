@@ -1,6 +1,6 @@
 
 from dateparser import parse
-from entrypoint.file_cache import clear_cache, get_directive
+from dateparser.entrypoint.file_cache import clear_cache, get_directive
 
 
 """
