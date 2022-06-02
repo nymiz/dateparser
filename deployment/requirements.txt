@@ -1,0 +1,4 @@
+flask
+gunicorn
+
+git+https://github.com/Unknown-Aliens/dateparser
