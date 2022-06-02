@@ -1,5 +1,20 @@
 .. Note that we use raw HTML in the header section because centering images and paragraphs is not supported in Github (https://github.com/github/markup/issues/163)
 
+
+Nymiz dateparser entrypoint
+-----------
+
+Use custom entrypoint to extract structure from text string.
+
+Sample
+"""
+from dateparser.entrypoint.parse import get_structure
+
+print(get_structure("Miércoles 31 Diciembre 2014"))
+print(get_structure("13 Febrero 2015 a las 23:00", settings={}))
+"""
+
+
 .. raw:: html
 
     <h1 align="center">

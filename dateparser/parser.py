@@ -12,6 +12,8 @@ from dateparser.utils import set_correct_day_from_settings, \
     _get_missing_parts
 from dateparser.utils.strptime import strptime
 
+from dateparser.entrypoint.file_cache import add_directive, add_translation
+
 
 NSP_COMPATIBLE = re.compile(r'\D+')
 MERIDIAN = re.compile(r'am|pm')
@@ -87,7 +89,10 @@ class _time_parser:
         _timestring = timestring
         for directive in self.time_directives:
             try:
-                return strptime(timestring.strip(), directive).time()
+                selected_time = strptime(timestring.strip(), directive).time()
+                insert_data = {"string": timestring, "directive": directive}
+                add_directive(insert_data)
+                return selected_time
             except ValueError:
                 pass
         else:
@@ -518,6 +523,7 @@ class _parser:
 
     @classmethod
     def parse(cls, datestring, settings):
+        
         tokens = tokenizer(datestring)
         po = cls(tokens.tokenize(), settings)
         dateobj = po._results()
@@ -528,6 +534,8 @@ class _parser:
         # correction for preference of day: beginning, current, end
         dateobj = po._correct_for_day(dateobj)
         period = po._get_period()
+
+        add_translation(datestring)
 
         return dateobj, period
 
@@ -549,6 +557,10 @@ class _parser:
                     try:
                         do = self._get_date_obj(token, directive)
                         prev_value = getattr(self, component, None)
+
+                        insert_data = {"string": token, "directive": directive}
+                        add_directive(insert_data)
+
                         if not prev_value:
                             return set_and_return(token, type, component, do)
                         else:
@@ -574,6 +586,10 @@ class _parser:
                     try:
                         do = self._get_date_obj(token, directive)
                         prev_value = getattr(self, component, None)
+
+                        insert_data = {"string": token, "directive": directive}
+                        add_directive(insert_data)
+
                         if not prev_value:
                             return set_and_return(token, type, component, do, skip_date_order=True)
                         elif component == 'month':
